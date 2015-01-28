@@ -1,13 +1,36 @@
-# Compiled Object files
-*.slo
-*.lo
+#output
+build/*
+
+#Qt
+*.moc
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+*resource.rc
+
+#Visual Stuido
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.ipch
+*.ilk
+*.pdb
+*.ncb
+*.tlog
+*.log
+*.obj
+*.manifest
+*.lastbuildstate
+*.unsuccessfulbuild
+*.aps
+*.exp
 *.o
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+#Makefiles
+Makefile
+Makefile.*
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+build
+lib
+bin

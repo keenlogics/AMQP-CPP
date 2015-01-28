@@ -5,6 +5,11 @@
  *  @copyright 2014 Copernica BV
  */
 
+// Visual Studio 2013 kann constexpr nicht
+#if (_MSC_VER <= 1800)
+#define constexpr
+#endif
+
 /**
  *  Set up namespace
  */
