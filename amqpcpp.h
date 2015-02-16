@@ -37,6 +37,7 @@
 #include <include/outbuffer.h>
 #include <include/watchable.h>
 #include <include/monitor.h>
+#include <include/unused.h>
 
 // amqp types
 #include <include/field.h>
