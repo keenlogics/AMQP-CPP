@@ -5,9 +5,9 @@
     Diese Datei nicht wieder mit dem Original ersetzen.
 */
 
-#include <QtEndian>
-
 #ifdef Q_OS_WIN
+
+#include <QtEndian>
 
 // define 16 bit macros
 #define htobe16(x) qToBigEndian(x)
@@ -26,6 +26,10 @@
 #define htole64(x) qToLittleEndian((qint64)x)
 #define be64toh(x) qFromBigEndian((qint64)x)
 #define le64toh(x) qFromLittleEndian((qint64)x)
+
+#else 
+
+#include <endian.h>
 
 #endif
 
