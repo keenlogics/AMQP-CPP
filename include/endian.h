@@ -1,11 +1,12 @@
-#ifndef endian_h
-#define endian_h
+#pragma once
 
 /*
     Diese Datei nicht wieder mit dem Original ersetzen.
 */
 
-#ifdef Q_OS_WIN
+#include <QtCore/qglobal.h>
+
+#if defined(Q_OS_WIN)
 
 #include <QtEndian>
 
@@ -32,6 +33,3 @@
 #include <endian.h>
 
 #endif
-
-#endif // endian_h
-
