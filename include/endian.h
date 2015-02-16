@@ -7,6 +7,8 @@
 
 #include <QtEndian>
 
+#ifdef Q_OS_WIN
+
 // define 16 bit macros
 #define htobe16(x) qToBigEndian(x)
 #define htole16(x) qToLittleEndian(x)
@@ -24,6 +26,8 @@
 #define htole64(x) qToLittleEndian((qint64)x)
 #define be64toh(x) qFromBigEndian((qint64)x)
 #define le64toh(x) qFromLittleEndian((qint64)x)
+
+#endif
 
 #endif // endian_h
 
