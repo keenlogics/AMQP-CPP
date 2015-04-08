@@ -1,9 +1,12 @@
-#ifndef endian_h
-#define endian_h
+#pragma once
 
 /*
     Diese Datei nicht wieder mit dem Original ersetzen.
 */
+
+#include <QtCore/qglobal.h>
+
+#if defined(Q_OS_WIN)
 
 #include <QtEndian>
 
@@ -20,10 +23,13 @@
 #define le32toh(x) qFromLittleEndian(x)
 
 // define 64 but macros
-#define htobe64(x) qToBigEndian(x)
-#define htole64(x) qToLittleEndian(x)
-#define be64toh(x) qFromBigEndian(x)
-#define le64toh(x) qFromLittleEndian(x)
+#define htobe64(x) qToBigEndian((qint64)x)
+#define htole64(x) qToLittleEndian((qint64)x)
+#define be64toh(x) qFromBigEndian((qint64)x)
+#define le64toh(x) qFromLittleEndian((qint64)x)
 
-#endif // endian_h
+#else 
 
+#include <endian.h>
+
+#endif
