@@ -104,13 +104,13 @@ void ConnectionImpl::remove(const ChannelImpl *channel)
  *  @param  buffer      buffer to decode
  *  @return             number of bytes that were processed
  */
-size_t ConnectionImpl::parse(const Buffer &buffer)
+uint64_t ConnectionImpl::parse(const Buffer &buffer)
 {
     // do not parse if already in an error state
     if (_state == state_closed) return 0;
 
     // number of bytes processed
-    size_t processed = 0;
+    uint64_t processed = 0;
 
     // create a monitor object that checks if the connection still exists
     Monitor monitor(this);
@@ -130,7 +130,7 @@ size_t ConnectionImpl::parse(const Buffer &buffer)
             receivedFrame.process(this);
 
             // number of bytes processed
-            size_t bytes = receivedFrame.totalSize();
+            uint64_t bytes = receivedFrame.totalSize();
 
             // add bytes
             processed += bytes;
@@ -286,6 +286,10 @@ bool ConnectionImpl::send(const Frame &frame)
 
     // some frames can be sent _after_ the close() function was called
     if (_closed && !frame.partOfShutdown()) return false;
+
+    // if the frame is bigger than we allow on the connection
+    // it is impossible to send out this frame successfully
+    if (frame.totalSize() > _maxFrame) return false;
 
     // we need an output buffer
     OutBuffer buffer(frame.buffer());

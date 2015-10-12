@@ -53,9 +53,9 @@ protected:
 
     /**
      *  All channels that are active
-     *  @var    map
+     *  @var    std::unordered_map<uint16_t, std::shared_ptr<ChannelImpl>>
      */
-    std::map<uint16_t, std::shared_ptr<ChannelImpl>> _channels;
+    std::unordered_map<uint16_t, std::shared_ptr<ChannelImpl>> _channels;
 
     /**
      *  The last unused channel ID
@@ -146,7 +146,7 @@ public:
      *  What is the state of the connection - is the protocol handshake completed?
      *  @return bool
      */
-    bool protocolOk()
+    bool protocolOk() const
     {
         // must be busy doing the connection handshake, or already connected
         return _state == state_handshake || _state == state_connected;
@@ -209,7 +209,7 @@ public:
      *  The max frame size
      *  @return uint32_t
      */
-    uint32_t maxFrame()
+    uint32_t maxFrame() const
     {
         return _maxFrame;
     }
@@ -218,7 +218,7 @@ public:
      *  The max payload size for body frames
      *  @return uint32_t
      */
-    uint32_t maxPayload()
+    uint32_t maxPayload() const
     {
         // 8 bytes for header and end-of-frame byte
         return _maxFrame - 8;
@@ -253,7 +253,7 @@ public:
      *  @param  buffer      buffer to decode
      *  @return             number of bytes that were processed
      */
-    size_t parse(const Buffer &buffer);
+    uint64_t parse(const Buffer &buffer);
 
     /**
      *  Close the connection
@@ -331,6 +331,15 @@ public:
 
         // inform the handler
         _handler->onClosed(_parent);
+    }
+
+    /**
+     *  Retrieve the amount of channels this connection has
+     *  @return std::size_t
+     */
+    std::size_t channels() const
+    {
+        return _channels.size();
     }
 
     /**

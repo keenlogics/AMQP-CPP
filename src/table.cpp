@@ -1,4 +1,5 @@
 #include "includes.h"
+#include <algorithm>
 
 // we live in the copernica namespace
 namespace AMQP {
@@ -10,25 +11,25 @@ namespace AMQP {
  */
 Table::Table(ReceivedFrame &frame)
 {
-    // table buffer begins with the number of bytes to read 
+    // table buffer begins with the number of bytes to read
     uint32_t bytesToRead = frame.nextUint32();
-    
-    // keep going until the correct number of bytes is read. 
+
+    // keep going until the correct number of bytes is read.
     while (bytesToRead > 0)
     {
         // field name and type
         ShortString name(frame);
-        
+
         // subtract number of bytes to read, plus one byte for the decoded type
         bytesToRead -= (name.size() + 1);
-        
+
         // get the field
         Field *field = Field::decode(frame);
         if (!field) continue;
-        
+
         // add field
         _fields[name] = std::shared_ptr<Field>(field);
-        
+
         // subtract size
         bytesToRead -= field->size();
     }
@@ -43,8 +44,10 @@ Table::Table(const Table &table)
     // loop through the table records
     for (auto iter = table._fields.begin(); iter != table._fields.end(); iter++)
     {
-        // add the field
-        _fields[iter->first] = std::shared_ptr<Field>(iter->second->clone());
+        // since a map is always ordered, we know that each element will
+        // be inserted at the end of the new map, so we can simply use
+        // emplace_hint and hint at insertion at the end of the map
+        _fields.emplace_hint(_fields.end(), std::make_pair(iter->first, iter->second->clone()));
     }
 }
 
@@ -57,21 +60,21 @@ Table &Table::operator=(const Table &table)
 {
     // skip self assignment
     if (this == &table) return *this;
-    
+
     // empty current fields
     _fields.clear();
-    
+
     // loop through the table records
     for (auto iter = table._fields.begin(); iter != table._fields.end(); iter++)
     {
         // add the field
         _fields[iter->first] = std::shared_ptr<Field>(iter->second->clone());
     }
-    
+
     // done
     return *this;
 }
-    
+
 /**
  *  Move assignment operator
  *  @param  table
@@ -81,17 +84,35 @@ Table &Table::operator=(Table &&table)
 {
     // skip self assignment
     if (this == &table) return *this;
-    
+
     // copy fields
     _fields = std::move(table._fields);
-    
+
     // done
     return *this;
 }
 
 /**
+ *  Retrieve all keys in the table
+ *
+ *  @return Vector with all keys in the table
+ */
+std::vector<std::string> Table::keys() const
+{
+    // the result vector
+    std::vector<std::string> result;
+    result.reserve(_fields.size());
+
+    // insert all keys into the result vector
+    for (auto &iter : _fields) result.push_back(iter.first);
+
+    // now return the result
+    return result;
+}
+
+/**
  *  Get a field
- * 
+ *
  *  If the field does not exist, an empty string field is returned
  *
  *  @param  name    field name
@@ -101,7 +122,7 @@ const Field &Table::get(const std::string &name) const
 {
     // we need an empty string
     static ShortString empty;
-    
+
     // locate the element first
     auto iter(_fields.find(name));
 
@@ -140,7 +161,7 @@ size_t Table::size() const
 }
 
 /**
- *  Write encoded payload to the given buffer. 
+ *  Write encoded payload to the given buffer.
  */
 void Table::fill(OutBuffer& buffer) const
 {
@@ -153,7 +174,7 @@ void Table::fill(OutBuffer& buffer) const
         // encode the field name
         ShortString name(iter->first);
         name.fill(buffer);
-        
+
         // encode the element type
         buffer.add((uint8_t) iter->second->typeID());
 

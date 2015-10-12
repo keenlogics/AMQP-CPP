@@ -1,7 +1,7 @@
 #pragma once
 /**
  *  AMQP field table
- * 
+ *
  *  @copyright 2014 Copernica BV
  */
 
@@ -40,7 +40,7 @@ public:
      *  @param  frame   received frame to decode
      */
     Table(ReceivedFrame &frame);
-    
+
     /**
      *  Copy constructor
      *  @param  table
@@ -64,13 +64,20 @@ public:
      *  @return Table
      */
     Table &operator=(const Table &table);
-    
+
     /**
      *  Move assignment operator
      *  @param  table
      *  @return Table
      */
     Table &operator=(Table &&table);
+
+    /**
+     *  Retrieve all keys in the table
+     *
+     *  @return Vector with all keys in the table
+     */
+    std::vector<std::string> keys() const;
 
     /**
      *  Create a new instance on the heap of this object, identical to the object passed
@@ -104,7 +111,7 @@ public:
 
     /**
      *  Get a field
-     * 
+     *
      *  If the field does not exist, an empty string field is returned
      *
      *  @param  name    field name
@@ -153,7 +160,7 @@ public:
     }
 
     /**
-     *  Write encoded payload to the given buffer. 
+     *  Write encoded payload to the given buffer.
      *  @param  buffer
      */
     virtual void fill(OutBuffer& buffer) const override;
@@ -168,6 +175,16 @@ public:
     }
 
     /**
+     *  We are a table
+     *
+     *  @return true, because we are a table
+     */
+    bool isTable() const override
+    {
+        return true;
+    }
+
+    /**
      *  Output the object to a stream
      *  @param std::ostream
      */
@@ -175,23 +192,23 @@ public:
     {
         // prefix
         stream << "table(";
-        
+
         // is this the first iteration
         bool first = true;
-        
+
         // loop through all members
-        for (auto &iter : _fields) 
+        for (auto &iter : _fields)
         {
             // split with comma
             if (!first) stream << ",";
-            
+
             // show output
             stream << iter.first << ":" << *iter.second;
-            
+
             // no longer first iter
             first = false;
         }
-        
+
         // postfix
         stream << ")";
     }

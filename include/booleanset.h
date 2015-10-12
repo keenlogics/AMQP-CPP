@@ -110,7 +110,7 @@ public:
         if (index > 7) return false;
 
         // magic bit manipulation...
-        return (bool)((1 << index) & _byte);
+        return 0 != ((1 << index) & _byte);
     }
 
     /**
@@ -149,7 +149,7 @@ public:
      *  Get the byte value
      *  @return value
      */
-    uint8_t value()
+    uint8_t value() const
     {
         return _byte;
     }
@@ -161,6 +161,16 @@ public:
     virtual char typeID() const override
     {
         return 't';
+    }
+
+    /**
+     *  We are a boolean field
+     *
+     *  @return true, because we are a boolean
+     */
+    bool isBoolean() const override
+    {
+        return true;
     }
 
     /**
