@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdexcept>
 #include <string>
 #include <set>
 #include <memory>
