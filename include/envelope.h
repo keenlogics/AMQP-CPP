@@ -67,7 +67,7 @@ public:
      *
      *  @param  envelope    the envelope to copy
      */
-    Envelope(const Envelope &envelope) :
+    Envelope(const Envelope &envelope) : MetaData(),
         _str(envelope._body, envelope._bodySize),
         _body(_str.data()),
         _bodySize(_str.size())
