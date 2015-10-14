@@ -22,6 +22,7 @@
 #include <stdexcept>
 #include <utility>
 #include <iostream>
+#include <random>
 
 // base C include files
 #include <stdint.h>
