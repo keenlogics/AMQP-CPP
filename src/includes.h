@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <vector>
 #include <queue>
+#include <random>
 
 // forward declarations
 #include "../include/classes.h"
